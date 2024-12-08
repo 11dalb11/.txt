@@ -1,0 +1,69 @@
+local TimeLeft = 480  -- 8 minutos en segundos
+local Running = true
+local ScreenGui = Instance.new("ScreenGui")
+local Frame = Instance.new("Frame")
+local TimeLabel = Instance.new("TextLabel")
+local CancelButton = Instance.new("TextButton")
+local TeleportMessage = Instance.new("TextLabel")
+
+-- Configuración de la GUI
+ScreenGui.Parent = game.CoreGui
+
+Frame.Size = UDim2.new(0, 300, 0, 150)
+Frame.Position = UDim2.new(0.5, -150, 0.5, -75)
+Frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+Frame.Parent = ScreenGui
+
+TimeLabel.Size = UDim2.new(1, 0, 0.6, 0)
+TimeLabel.Position = UDim2.new(0, 0, 0, 0)
+TimeLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+TimeLabel.TextScaled = true
+TimeLabel.Text = "Tiempo restante: " .. math.floor(TimeLeft / 60) .. " minutos"
+TimeLabel.Parent = Frame
+
+CancelButton.Size = UDim2.new(0.6, 0, 0.3, 0)
+CancelButton.Position = UDim2.new(0.2, 0, 0.65, 0)
+CancelButton.Text = "Cancelar"
+CancelButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+CancelButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+CancelButton.TextScaled = true
+CancelButton.Parent = Frame
+
+TeleportMessage.Size = UDim2.new(1, 0, 0.6, 0)
+TeleportMessage.Position = UDim2.new(0, 0, 0, 0)
+TeleportMessage.TextColor3 = Color3.fromRGB(0, 255, 0)
+TeleportMessage.TextScaled = true
+TeleportMessage.Text = ""
+TeleportMessage.Parent = Frame
+
+-- Función para reducir el tiempo
+local function Countdown()
+    while TimeLeft > 0 and Running do
+        wait(1)
+        TimeLeft = TimeLeft - 1
+        TimeLabel.Text = "Tiempo restante: " .. math.floor(TimeLeft / 60) .. " minutos y " .. TimeLeft % 60 .. " segundos"
+    end
+    
+    if Running then
+        -- Mostrar mensaje de teletransporte
+        TeleportMessage.Text = "Se acabó el tiempo, teletransportando..."
+        TimeLabel.Text = ""
+
+        -- Aquí es donde el script para teletransportarse se ejecutaría:
+        -- game:GetService("TeleportService"):TeleportToPlaceInstance(placeId, instanceId)
+
+        wait(3)
+        TeleportMessage.Text = ""
+        TimeLeft = 480  -- Reinicia el temporizador a 8 minutos
+        Countdown()  -- Repetir el ciclo
+    end
+end
+
+-- Empezar el temporizador
+Countdown()
+
+-- Función para cancelar el proceso
+CancelButton.MouseButton1Click:Connect(function()
+    Running = false
+    ScreenGui:Destroy()
+end)
